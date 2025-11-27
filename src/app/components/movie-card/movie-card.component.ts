@@ -1,21 +1,28 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { Movie } from '../../models/movie.model';
 import { MovieService } from '../../services/movie.service';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
     selector: 'app-movie-card',
     standalone: true,
-    imports: [CommonModule, RouterLink],
+    imports: [CommonModule, RouterLink, ConfirmDialogComponent],
     templateUrl: './movie-card.component.html',
     styleUrls: ['./movie-card.component.css']
 })
 export class MovieCardComponent {
     @Input() movie!: Movie;
-    isFavorite: boolean = false;
+    @Input() showActions: boolean = true;
 
-    constructor(private movieService: MovieService) { }
+    isFavorite: boolean = false;
+    showDeleteDialog: boolean = false;
+
+    constructor(
+        private movieService: MovieService,
+        private router: Router
+    ) { }
 
     ngOnInit() {
         this.checkFavorite();
@@ -35,5 +42,26 @@ export class MovieCardComponent {
         event.stopPropagation(); // Prevent navigation when clicking heart
         event.preventDefault();
         this.movieService.toggleFavorite(this.movie.id);
+    }
+
+    onEdit(event: Event) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.router.navigate(['/movies', this.movie.id, 'edit']);
+    }
+
+    onDelete(event: Event) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.showDeleteDialog = true;
+    }
+
+    confirmDelete() {
+        this.movieService.deleteMovie(this.movie.id);
+        this.showDeleteDialog = false;
+    }
+
+    cancelDelete() {
+        this.showDeleteDialog = false;
     }
 }

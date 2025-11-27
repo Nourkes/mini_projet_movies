@@ -1,0 +1,28 @@
+<nav class="bg-gray-900 text-white p-4 shadow-md">
+  <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+    <!-- Logo -->
+    <a routerLink="/" class="text-2xl font-bold text-red-600 mb-4 md:mb-0 hover:text-red-500 transition">
+      🎬 MovieExplorer
+    </a>
+
+    <!-- Navigation Links -->
+    <div class="flex space-x-6 mb-4 md:mb-0">
+      <a routerLink="/movies" routerLinkActive="text-red-500" class="hover:text-gray-300 transition">Movies</a>
+      <a routerLink="/favorites" routerLinkActive="text-red-500" class="hover:text-gray-300 transition">Favorites</a>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="flex items-center">
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery" 
+        (keyup.enter)="onSearch()"
+        placeholder="Search movies..." 
+        class="bg-gray-800 text-white px-4 py-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-red-600 w-64"
+      />
+      <button (click)="onSearch()" class="bg-red-600 px-4 py-2 rounded-r-md hover:bg-red-700 transition">
+        🔍
+      </button>
+    </div>
+  </div>
+</nav>

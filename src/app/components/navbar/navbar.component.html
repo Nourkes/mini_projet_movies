@@ -1,18 +1,21 @@
 <nav class="bg-gray-900 text-white p-4 shadow-md">
   <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
-    <!-- Logo -->
-    <a routerLink="/" class="text-2xl font-bold text-red-600 mb-4 md:mb-0 hover:text-red-500 transition">
-      🎬 MovieExplorer
-    </a>
+    <!-- Logo and Add Button Section -->
+    <div class="flex items-center space-x-4 mb-4 md:mb-0">
+      <a routerLink="/" class="text-2xl font-bold text-red-600 hover:text-red-500 transition">
+        🎬 MovieExplorer
+      </a>
+      <a routerLink="/movies/new"
+        class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition font-bold text-sm md:text-base">
+        ➕ Add Movie
+      </a>
+    </div>
 
     <!-- Navigation Links -->
     <div class="flex space-x-6 mb-4 md:mb-0">
       <a routerLink="/movies" routerLinkActive="text-red-500" class="hover:text-gray-300 transition">Movies</a>
       <a routerLink="/favorites" routerLinkActive="text-red-500" class="hover:text-gray-300 transition">Favorites</a>
       <a routerLink="/dashboard" routerLinkActive="text-red-500" class="hover:text-gray-300 transition">Dashboard</a>
-      <a routerLink="/movies/new" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition font-bold">
-        + Add Movie
-      </a>
     </div>
 
     <!-- Search Bar -->

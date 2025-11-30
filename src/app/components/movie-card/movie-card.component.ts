@@ -4,11 +4,21 @@ import { RouterLink, Router } from '@angular/router';
 import { Movie } from '../../models/movie.model';
 import { MovieService } from '../../services/movie.service';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { RatingStarsPipe } from '../../pipes/rating-stars.pipe';
+import { HighlightDirective } from '../../directives/highlight.directive';
+import { TooltipDirective } from '../../directives/tooltip.directive';
 
 @Component({
     selector: 'app-movie-card',
     standalone: true,
-    imports: [CommonModule, RouterLink, ConfirmDialogComponent],
+    imports: [
+        CommonModule,
+        RouterLink,
+        ConfirmDialogComponent,
+        RatingStarsPipe,
+        HighlightDirective,
+        TooltipDirective
+    ],
     templateUrl: './movie-card.component.html',
     styleUrls: ['./movie-card.component.css']
 })
@@ -41,7 +51,9 @@ export class MovieCardComponent {
     toggleFavorite(event: Event) {
         event.stopPropagation(); // Prevent navigation when clicking heart
         event.preventDefault();
-        this.movieService.toggleFavorite(this.movie.id);
+        this.movieService.toggleFavorite(this.movie.id).subscribe({
+            error: (err) => console.error('Error toggling favorite:', err)
+        });
     }
 
     onEdit(event: Event) {
@@ -57,8 +69,15 @@ export class MovieCardComponent {
     }
 
     confirmDelete() {
-        this.movieService.deleteMovie(this.movie.id);
-        this.showDeleteDialog = false;
+        this.movieService.deleteMovie(this.movie.id).subscribe({
+            next: () => {
+                this.showDeleteDialog = false;
+            },
+            error: (err) => {
+                console.error('Error deleting movie:', err);
+                this.showDeleteDialog = false;
+            }
+        });
     }
 
     cancelDelete() {

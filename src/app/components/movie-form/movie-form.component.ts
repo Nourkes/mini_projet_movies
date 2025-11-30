@@ -4,11 +4,12 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } fr
 import { Router, ActivatedRoute } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
 import { Movie } from '../../models/movie.model';
+import { RatingValidatorDirective } from '../../directives/rating-validator.directive';
 
 @Component({
     selector: 'app-movie-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, RatingValidatorDirective],
     templateUrl: './movie-form.component.html',
     styleUrls: ['./movie-form.component.css']
 })
@@ -98,12 +99,20 @@ export class MovieFormComponent implements OnInit {
             };
 
             if (this.isEditMode && this.movieId) {
-                this.movieService.updateMovie(this.movieId, movieData);
+                this.movieService.updateMovie(this.movieId, movieData).subscribe({
+                    next: () => {
+                        this.router.navigate(['/movies']);
+                    },
+                    error: (err) => console.error('Error updating movie:', err)
+                });
             } else {
-                this.movieService.addMovie(movieData);
+                this.movieService.addMovie(movieData).subscribe({
+                    next: () => {
+                        this.router.navigate(['/movies']);
+                    },
+                    error: (err) => console.error('Error adding movie:', err)
+                });
             }
-
-            this.router.navigate(['/movies']);
         }
     }
 

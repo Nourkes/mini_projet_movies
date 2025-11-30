@@ -1,92 +1,165 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
 import { Movie } from '../models/movie.model';
-import { MOVIES } from '../data/movies.mock';
 
 @Injectable({
     providedIn: 'root'
 })
 export class MovieService {
-    private moviesKey = 'movieExplorer_movies';
-    private favoritesKey = 'movieExplorer_favorites';
+    private apiUrl = 'http://localhost:3000/movies';
+    private favoritesUrl = 'http://localhost:3000/favorites';
 
-    private moviesSubject: BehaviorSubject<Movie[]>;
-    private favoritesSubject: BehaviorSubject<number[]>;
+    private moviesSubject: BehaviorSubject<Movie[]> = new BehaviorSubject<Movie[]>([]);
+    private favoritesSubject: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
 
-    constructor() {
-        // Load movies from localStorage or use mock data
-        const storedMovies = this.getMoviesFromStorage();
-        this.moviesSubject = new BehaviorSubject<Movie[]>(storedMovies.length > 0 ? storedMovies : MOVIES);
-
-        // Load favorites
-        this.favoritesSubject = new BehaviorSubject<number[]>(this.getFavoritesFromStorage());
-
-        // If no movies in storage, save the initial mock data
-        if (storedMovies.length === 0) {
-            this.syncMoviesToStorage();
-        }
+    constructor(private http: HttpClient) {
+        // Charger les films et favoris au démarrage
+        this.loadMoviesFromServer();
+        this.loadFavoritesFromServer();
     }
 
-    // Read Operations
+    /**
+     * Charge les films depuis le serveur
+     */
+    private loadMoviesFromServer(): void {
+        this.http.get<Movie[]>(this.apiUrl).pipe(
+            catchError(error => {
+                console.error('Erreur lors du chargement des films:', error);
+                return throwError(() => error);
+            })
+        ).subscribe(movies => {
+            this.moviesSubject.next(movies);
+        });
+    }
+
+    /**
+     * Charge les favoris depuis le serveur
+     */
+    private loadFavoritesFromServer(): void {
+        this.http.get<number[]>(this.favoritesUrl).pipe(
+            catchError(error => {
+                console.error('Erreur lors du chargement des favoris:', error);
+                // Si l'endpoint n'existe pas encore, retourner un tableau vide
+                return throwError(() => error);
+            })
+        ).subscribe(favorites => {
+            this.favoritesSubject.next(favorites || []);
+        });
+    }
+
+    // ==================== READ Operations ====================
+
+    /**
+     * Retourne un Observable de tous les films
+     */
     getMovies(): Observable<Movie[]> {
         return this.moviesSubject.asObservable();
     }
 
+    /**
+     * Retourne un film par son ID
+     */
     getMovieById(id: number): Observable<Movie | undefined> {
-        return this.moviesSubject.pipe(
-            map(movies => movies.find(m => m.id === id))
+        return this.http.get<Movie>(`${this.apiUrl}/${id}`).pipe(
+            catchError(error => {
+                console.error(`Erreur lors de la récupération du film ${id}:`, error);
+                return throwError(() => error);
+            })
         );
     }
 
-    // Create Operation
-    addMovie(movie: Omit<Movie, 'id'>): void {
-        const currentMovies = this.moviesSubject.value;
-        const newId = this.getNextId();
-        const newMovie: Movie = { ...movie, id: newId };
+    // ==================== CREATE Operation ====================
 
-        const updatedMovies = [...currentMovies, newMovie];
-        this.moviesSubject.next(updatedMovies);
-        this.syncMoviesToStorage();
+    /**
+     * Ajoute un nouveau film
+     */
+    addMovie(movie: Omit<Movie, 'id'>): Observable<Movie> {
+        return this.http.post<Movie>(this.apiUrl, movie).pipe(
+            tap(newMovie => {
+                // Mettre à jour le BehaviorSubject local
+                const currentMovies = this.moviesSubject.value;
+                this.moviesSubject.next([...currentMovies, newMovie]);
+            }),
+            catchError(error => {
+                console.error('Erreur lors de l\'ajout du film:', error);
+                return throwError(() => error);
+            })
+        );
     }
 
-    // Update Operation
-    updateMovie(id: number, updatedMovie: Omit<Movie, 'id'>): void {
-        const currentMovies = this.moviesSubject.value;
-        const index = currentMovies.findIndex(m => m.id === id);
+    // ==================== UPDATE Operation ====================
 
-        if (index !== -1) {
-            const movies = [...currentMovies];
-            movies[index] = { ...updatedMovie, id };
-            this.moviesSubject.next(movies);
-            this.syncMoviesToStorage();
-        }
+    /**
+     * Met à jour un film existant
+     */
+    updateMovie(id: number, updatedMovie: Omit<Movie, 'id'>): Observable<Movie> {
+        const movieWithId: Movie = { ...updatedMovie, id };
+
+        return this.http.put<Movie>(`${this.apiUrl}/${id}`, movieWithId).pipe(
+            tap(movie => {
+                // Mettre à jour le BehaviorSubject local
+                const currentMovies = this.moviesSubject.value;
+                const index = currentMovies.findIndex(m => m.id === id);
+                if (index !== -1) {
+                    const updatedMovies = [...currentMovies];
+                    updatedMovies[index] = movie;
+                    this.moviesSubject.next(updatedMovies);
+                }
+            }),
+            catchError(error => {
+                console.error(`Erreur lors de la mise à jour du film ${id}:`, error);
+                return throwError(() => error);
+            })
+        );
     }
 
-    // Delete Operation
-    deleteMovie(id: number): void {
-        const currentMovies = this.moviesSubject.value;
-        const filteredMovies = currentMovies.filter(m => m.id !== id);
+    // ==================== DELETE Operation ====================
 
-        this.moviesSubject.next(filteredMovies);
-        this.syncMoviesToStorage();
+    /**
+     * Supprime un film
+     */
+    deleteMovie(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+            tap(() => {
+                // Mettre à jour le BehaviorSubject local
+                const currentMovies = this.moviesSubject.value;
+                const filteredMovies = currentMovies.filter(m => m.id !== id);
+                this.moviesSubject.next(filteredMovies);
 
-        // Also remove from favorites if present
-        if (this.isFavorite(id)) {
-            this.toggleFavorite(id);
-        }
+                // Retirer des favoris si présent
+                if (this.isFavorite(id)) {
+                    this.toggleFavorite(id).subscribe();
+                }
+            }),
+            catchError(error => {
+                console.error(`Erreur lors de la suppression du film ${id}:`, error);
+                return throwError(() => error);
+            })
+        );
     }
 
-    // Favorites Management
+    // ==================== FAVORITES Management ====================
+
+    /**
+     * Retourne un Observable des IDs favoris
+     */
     getFavorites(): Observable<number[]> {
         return this.favoritesSubject.asObservable();
     }
 
+    /**
+     * Vérifie si un film est dans les favoris
+     */
     isFavorite(id: number): boolean {
         return this.favoritesSubject.value.includes(id);
     }
 
-    toggleFavorite(id: number): void {
+    /**
+     * Ajoute ou retire un film des favoris
+     */
+    toggleFavorite(id: number): Observable<number[]> {
         const currentFavorites = this.favoritesSubject.value;
         let newFavorites: number[];
 
@@ -96,36 +169,23 @@ export class MovieService {
             newFavorites = [...currentFavorites, id];
         }
 
-        this.updateFavorites(newFavorites);
+        // Mettre à jour sur le serveur (PUT pour remplacer toute la liste)
+        return this.http.put<number[]>(this.favoritesUrl, newFavorites).pipe(
+            tap(favorites => {
+                this.favoritesSubject.next(favorites);
+            }),
+            catchError(error => {
+                console.error('Erreur lors de la mise à jour des favoris:', error);
+                return throwError(() => error);
+            })
+        );
     }
 
-    // Helper Methods
-    private getNextId(): number {
-        const currentMovies = this.moviesSubject.value;
-        if (currentMovies.length === 0) return 1;
-        return Math.max(...currentMovies.map(m => m.id)) + 1;
-    }
+    // ==================== STATISTICS ====================
 
-    private getMoviesFromStorage(): Movie[] {
-        const stored = localStorage.getItem(this.moviesKey);
-        return stored ? JSON.parse(stored) : [];
-    }
-
-    private syncMoviesToStorage(): void {
-        localStorage.setItem(this.moviesKey, JSON.stringify(this.moviesSubject.value));
-    }
-
-    private getFavoritesFromStorage(): number[] {
-        const stored = localStorage.getItem(this.favoritesKey);
-        return stored ? JSON.parse(stored) : [];
-    }
-
-    private updateFavorites(favorites: number[]): void {
-        localStorage.setItem(this.favoritesKey, JSON.stringify(favorites));
-        this.favoritesSubject.next(favorites);
-    }
-
-    // Statistics for Dashboard
+    /**
+     * Retourne des statistiques pour le dashboard
+     */
     getStats(): Observable<{
         totalMovies: number;
         totalFavorites: number;

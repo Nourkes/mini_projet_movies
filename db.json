@@ -1,0 +1,101 @@
+{
+  "movies": [
+    {
+      "id": 1,
+      "title": "Inception",
+      "year": 2010,
+      "genre": ["Sci-Fi", "Action"],
+      "rating": 8.8,
+      "poster": "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
+      "synopsis": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+      "cast": ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Elliot Page"],
+      "type": "movie",
+      "duration": "2h 28m"
+    },
+    {
+      "id": 2,
+      "title": "Breaking Bad",
+      "year": 2008,
+      "genre": ["Crime", "Drama"],
+      "rating": 9.5,
+      "poster": "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg",
+      "synopsis": "A high school chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing and selling methamphetamine in order to secure his family's future.",
+      "cast": ["Bryan Cranston", "Aaron Paul", "Anna Gunn"],
+      "type": "series",
+      "duration": "5 Seasons"
+    },
+    {
+      "id": 3,
+      "title": "The Dark Knight",
+      "year": 2008,
+      "genre": ["Action", "Crime", "Drama"],
+      "rating": 9.0,
+      "poster": "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+      "synopsis": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+      "cast": ["Christian Bale", "Heath Ledger", "Aaron Eckhart"],
+      "type": "movie",
+      "duration": "2h 32m"
+    },
+    {
+      "id": 4,
+      "title": "Stranger Things",
+      "year": 2016,
+      "genre": ["Drama", "Fantasy", "Horror"],
+      "rating": 8.7,
+      "poster": "https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg",
+      "synopsis": "When a young boy disappears, his mother, a police chief and his friends must confront terrifying supernatural forces in order to get him back.",
+      "cast": ["Millie Bobby Brown", "Finn Wolfhard", "Winona Ryder"],
+      "type": "series",
+      "duration": "4 Seasons"
+    },
+    {
+      "id": 5,
+      "title": "Interstellar",
+      "year": 2014,
+      "genre": ["Adventure", "Drama", "Sci-Fi"],
+      "rating": 8.6,
+      "poster": "https://image.tmdb.org/t/p/w500/gEU2QniL6C8zt752zmnrCmarCCx.jpg",
+      "synopsis": "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+      "cast": ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"],
+      "type": "movie",
+      "duration": "2h 49m"
+    },
+    {
+      "id": 6,
+      "title": "Spirited Away",
+      "year": 2001,
+      "genre": ["Animation", "Adventure", "Family"],
+      "rating": 8.6,
+      "poster": "https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUKGk251ytnZ.jpg",
+      "synopsis": "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches, and spirits, and where humans are changed into beasts.",
+      "cast": ["Daveigh Chase", "Suzanne Pleshette", "Miyu Irino"],
+      "type": "movie",
+      "duration": "2h 5m"
+    },
+    {
+      "id": 7,
+      "title": "The Mandalorian",
+      "year": 2019,
+      "genre": ["Action", "Adventure", "Sci-Fi"],
+      "rating": 8.7,
+      "poster": "https://image.tmdb.org/t/p/w500/sWgBv7LV2PRoQgkxwlibdGXKz1S.jpg",
+      "synopsis": "The travels of a lone bounty hunter in the outer reaches of the galaxy, far from the authority of the New Republic.",
+      "cast": ["Pedro Pascal", "Carl Weathers", "Giancarlo Esposito"],
+      "type": "series",
+      "duration": "3 Seasons"
+    },
+    {
+      "id": 8,
+      "title": "Parasite",
+      "year": 2019,
+      "genre": ["Comedy", "Drama", "Thriller"],
+      "rating": 8.5,
+      "poster": "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
+      "synopsis": "Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.",
+      "cast": ["Kang-ho Song", "Sun-kyun Lee", "Yeo-jeong Cho"],
+      "type": "movie",
+      "duration": "2h 12m"
+    }
+  ],
+  "favorites": []
+}

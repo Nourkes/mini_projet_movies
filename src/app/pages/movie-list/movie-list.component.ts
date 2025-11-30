@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { Movie } from '../../models/movie.model';
 import { MovieService } from '../../services/movie.service';
 import { MovieCardComponent } from '../../components/movie-card/movie-card.component';
+import { FilterMoviesPipe } from '../../pipes/filter-movies.pipe';
 
 @Component({
     selector: 'app-movie-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, MovieCardComponent],
+    imports: [CommonModule, FormsModule, MovieCardComponent, FilterMoviesPipe],
     templateUrl: './movie-list.component.html',
     styleUrls: ['./movie-list.component.css']
 })

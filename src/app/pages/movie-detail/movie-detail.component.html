@@ -1,66 +1,90 @@
 <div class="container mx-auto p-4" *ngIf="movie; else notFound">
-    <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden">
+    <div class="bg-primary-light rounded-xl shadow-2xl overflow-hidden border border-white/5">
         <div class="md:flex">
             <!-- Poster -->
-            <div class="md:w-1/3 lg:w-1/4">
-                <img [src]="movie.poster" [alt]="movie.title" class="w-full h-full object-cover">
+            <div class="md:w-1/3 lg:w-1/4 relative group">
+                <img [src]="movie.poster" [alt]="movie.title"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-primary-dark/80 via-transparent to-transparent">
+                </div>
             </div>
 
             <!-- Content -->
-            <div class="p-8 md:w-2/3 lg:w-3/4 text-white">
-                <div class="flex justify-between items-start">
+            <div class="p-8 md:w-2/3 lg:w-3/4 text-white relative">
+                <!-- Background Glow -->
+                <div
+                    class="absolute top-0 right-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -z-10 pointer-events-none">
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-between items-start gap-4">
                     <div>
-                        <h1 class="text-4xl font-bold mb-2">{{ movie.title }}</h1>
-                        <div class="flex items-center space-x-4 text-gray-400 mb-4">
-                            <span>{{ movie.year }}</span>
+                        <h1
+                            class="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                            {{ movie.title }}</h1>
+                        <div class="flex items-center space-x-4 text-gray-400 mb-6 text-sm md:text-base">
+                            <span class="font-medium text-secondary">{{ movie.year }}</span>
                             <span>•</span>
                             <span>{{ movie.duration }}</span>
                             <span>•</span>
-                            <span class="border border-gray-600 px-2 py-0.5 rounded text-sm">{{ movie.type | titlecase
-                                }}</span>
+                            <span
+                                class="border border-secondary/30 text-secondary px-3 py-0.5 rounded-full text-xs uppercase tracking-wider bg-secondary/10">{{
+                                movie.type | titlecase }}</span>
                         </div>
                     </div>
-                    <div class="flex items-center bg-black bg-opacity-50 px-3 py-1 rounded">
-                        <span class="text-yellow-400 text-xl font-bold mr-1">⭐</span>
-                        <span class="text-xl font-bold">{{ movie.rating }}</span>
-                        <span class="text-gray-500 text-sm ml-1">/10</span>
+                    <div
+                        class="flex items-center bg-primary-dark/50 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10 shadow-lg">
+                        <span class="text-accent text-2xl font-bold mr-2">⭐</span>
+                        <div class="flex flex-col">
+                            <span class="text-2xl font-bold leading-none">{{ movie.rating }}</span>
+                            <span class="text-gray-500 text-xs">/10</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Genres -->
-                <div class="flex flex-wrap gap-2 mb-6">
-                    <span *ngFor="let g of movie.genre" class="bg-red-600 text-white px-3 py-1 rounded-full text-sm">
+                <div class="flex flex-wrap gap-2 mb-8">
+                    <span *ngFor="let g of movie.genre"
+                        class="bg-primary-dark hover:bg-secondary/20 text-gray-300 hover:text-white px-4 py-1.5 rounded-full text-sm transition-colors border border-white/5 cursor-default">
                         {{ g }}
                     </span>
                 </div>
 
                 <!-- Synopsis -->
-                <div class="mb-8">
-                    <h2 class="text-xl font-bold mb-2 text-gray-300">Synopsis</h2>
-                    <p class="text-gray-300 leading-relaxed">{{ movie.synopsis }}</p>
+                <div class="mb-8 bg-primary-dark/30 p-6 rounded-xl border border-white/5">
+                    <h2 class="text-xl font-bold mb-3 text-secondary flex items-center gap-2">
+                        <span>📝</span> Synopsis
+                    </h2>
+                    <p class="text-gray-300 leading-relaxed text-lg">{{ movie.synopsis }}</p>
                 </div>
 
                 <!-- Cast -->
-                <div class="mb-8">
-                    <h2 class="text-xl font-bold mb-2 text-gray-300">Cast</h2>
-                    <div class="flex flex-wrap gap-4">
-                        <div *ngFor="let actor of movie.cast" class="bg-gray-700 px-4 py-2 rounded text-gray-300">
+                <div class="mb-10">
+                    <h2 class="text-xl font-bold mb-4 text-secondary flex items-center gap-2">
+                        <span>🎭</span> Cast
+                    </h2>
+                    <div class="flex flex-wrap gap-3">
+                        <div *ngFor="let actor of movie.cast"
+                            class="bg-primary-dark/50 hover:bg-primary-dark px-4 py-2 rounded-lg text-gray-300 border border-white/5 transition-colors">
                             {{ actor }}
                         </div>
                     </div>
                 </div>
 
                 <!-- Actions -->
-                <div class="flex space-x-4 mt-8">
-                    <button (click)="toggleFavorite()" class="flex items-center px-6 py-3 rounded font-bold transition"
-                        [class.bg-red-600]="!isFavorite" [class.hover:bg-red-700]="!isFavorite"
-                        [class.bg-gray-600]="isFavorite" [class.hover:bg-gray-500]="isFavorite">
-                        <span class="mr-2">{{ isFavorite ? '💔 Remove from Favorites' : '❤️ Add to Favorites' }}</span>
+                <div class="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t border-white/10">
+                    <button (click)="toggleFavorite()"
+                        class="flex items-center justify-center px-8 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                        [class.bg-accent]="!isFavorite" [class.hover:bg-accent-dark]="!isFavorite"
+                        [class.text-white]="!isFavorite" [class.bg-primary-dark]="isFavorite"
+                        [class.hover:bg-primary-dark/80]="isFavorite" [class.text-gray-300]="isFavorite"
+                        [class.border]="isFavorite" [class.border-white-10]="isFavorite">
+                        <span class="mr-2 text-xl">{{ isFavorite ? '💔' : '❤️' }}</span>
+                        <span>{{ isFavorite ? 'Remove from Favorites' : 'Add to Favorites' }}</span>
                     </button>
 
                     <a routerLink="/movies"
-                        class="flex items-center px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded font-bold transition text-white">
-                        Back to List
+                        class="flex items-center justify-center px-8 py-3 bg-gray-700 hover:bg-gray-600 rounded-xl font-bold transition-all duration-300 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                        <span>⬅️ Back to List</span>
                     </a>
                 </div>
             </div>
@@ -70,7 +94,12 @@
 
 <ng-template #notFound>
     <div class="container mx-auto p-20 text-center text-white">
+        <div class="text-6xl mb-4">🎬</div>
         <h2 class="text-3xl font-bold mb-4">Movie Not Found</h2>
-        <a routerLink="/movies" class="text-red-500 hover:underline">Return to Home</a>
+        <p class="text-gray-400 mb-8">The movie you are looking for does not exist or has been removed.</p>
+        <a routerLink="/movies"
+            class="inline-block bg-secondary hover:bg-secondary-light text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg hover:shadow-secondary/50">
+            Return to Home
+        </a>
     </div>
 </ng-template>

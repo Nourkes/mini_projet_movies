@@ -100,7 +100,7 @@
     },
     {
       "title": "Spirited Away",
-      "year": 2001,
+      "year": 2002,
       "genre": [
         "Animation",
         "Adventure",
@@ -179,7 +179,8 @@
   ],
   "favorites": {
     "ids": [
-      "3"
+      "3",
+      "1"
     ]
   }
 }

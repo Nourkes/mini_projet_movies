@@ -2,21 +2,6 @@
 
 Application Angular moderne pour explorer et gérer une collection de films et séries avec une interface utilisateur premium utilisant Tailwind CSS.
 
-## 🎯 Conformité au Barème
-
-✅ **Test des fonctionnalités implémentées (4 pts)** - CRUD complet, favoris, recherche, dashboard, statistiques  
-✅ **Clarté de code (2 pts)** - Code bien structuré, commenté et organisé  
-✅ **Design Tailwind + IHM (3 pts)** - Palette personnalisée, animations, glassmorphism  
-✅ **Directives et pipes (3 pts)** - 3 pipes + 3 directives personnalisés  
-✅ **Composants Angular (4 pts)** - 8 composants (4 minimum requis)  
-✅ **Composants Imbriqués (3 pts)** - MovieCard dans MovieList/Favorites, ConfirmDialog, etc.  
-✅ **Services Angular partagés (5 pts)** - MovieService avec BehaviorSubject  
-✅ **Formulaires + validation (5 pts)** - Reactive Forms avec validateurs multiples  
-✅ **Routing (3 pts)** - Routes paramétrées, redirections, wildcard  
-✅ **Services HTTP (3 pts)** - json-server avec GET/POST/PUT/DELETE  
-✅ **Réponses aux questions (5 pts)** - Voir ANSWERS.md  
-
-**Total: 40 points**
 
 ## 🚀 Installation et Démarrage
 
@@ -88,8 +73,7 @@ movie-explorer/
 │   │   │   └── tooltip.directive.ts
 │   │   ├── models/              # Modèles TypeScript
 │   │   │   └── movie.model.ts
-│   │   ├── data/                # Données mock
-│   │   │   └── movies.mock.ts
+
 │   │   ├── app.routes.ts        # Configuration routing
 │   │   └── app.config.ts        # Configuration app
 │   └── styles.css               # Styles globaux
@@ -103,7 +87,7 @@ movie-explorer/
 
 ### ✨ Fonctionnalités Principales
 - **CRUD Complet**: Créer, lire, modifier, supprimer des films/séries
-- **Système de Favoris**: Marquer des films comme favoris
+- **Système de Favoris**: Marquer des films comme favoris (persistant)
 - **Recherche**: Rechercher par titre, genre, acteurs
 - **Filtrage**: Filtrer par genre
 - **Tri**: Trier par note ou année
@@ -140,7 +124,7 @@ movie-explorer/
 
 ## 🛠️ Technologies Utilisées
 
-- **Angular 20**: Framework frontend
+- **Angular 18+**: Framework frontend
 - **TypeScript**: Langage principal
 - **Tailwind CSS**: Styling
 - **RxJS**: Programmation réactive
@@ -167,7 +151,7 @@ Le formulaire utilise Reactive Forms avec validations:
 - `POST /movies` - Créer un film
 - `PUT /movies/:id` - Modifier un film
 - `DELETE /movies/:id` - Supprimer un film
-- `GET /favorites` - Liste des IDs favoris
+- `GET /favorites` - Liste des IDs favoris (objet `{ids: [...]}`)
 - `PUT /favorites` - Mettre à jour les favoris
 
 ## 📖 Documentation

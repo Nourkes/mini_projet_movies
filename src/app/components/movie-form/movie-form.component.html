@@ -1,126 +1,143 @@
 <div class="container mx-auto p-4 max-w-2xl">
-    <h1 class="text-3xl font-bold text-white mb-6">
-        {{ isEditMode ? 'Edit Movie/Series' : 'Add New Movie/Series' }}
+    <h1 class="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+        <span class="text-4xl">{{ isEditMode ? '✏️' : '🎬' }}</span>
+        <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">{{ isEditMode ? 'Edit
+            Movie/Series' : 'Add New Movie/Series' }}</span>
     </h1>
 
-    <form [formGroup]="movieForm" (ngSubmit)="onSubmit()" class="bg-gray-800 rounded-lg p-6 shadow-xl">
+    <form [formGroup]="movieForm" (ngSubmit)="onSubmit()"
+        class="bg-primary-light/50 backdrop-blur-sm rounded-xl p-8 shadow-2xl border border-white/5">
         <!-- Title -->
-        <div class="mb-4">
-            <label class="block text-gray-300 font-medium mb-2">Title *</label>
+        <div class="mb-6">
+            <label class="block text-gray-300 font-medium mb-2 ml-1">Title <span class="text-accent">*</span></label>
             <input type="text" formControlName="title"
-                class="w-full bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+                class="w-full bg-primary-dark text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary border border-white/10 placeholder-gray-500 transition-all"
                 placeholder="Enter movie/series title" />
             <div *ngIf="movieForm.get('title')?.invalid && movieForm.get('title')?.touched"
-                class="text-red-500 text-sm mt-1">
-                Title is required
+                class="text-accent text-sm mt-1 ml-1 flex items-center gap-1">
+                <span>⚠️</span> Title is required
             </div>
         </div>
 
         <!-- Year -->
-        <div class="mb-4">
-            <label class="block text-gray-300 font-medium mb-2">Year *</label>
+        <div class="mb-6">
+            <label class="block text-gray-300 font-medium mb-2 ml-1">Year <span class="text-accent">*</span></label>
             <input type="number" formControlName="year"
-                class="w-full bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+                class="w-full bg-primary-dark text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary border border-white/10 placeholder-gray-500 transition-all"
                 placeholder="e.g., 2024" />
             <div *ngIf="movieForm.get('year')?.invalid && movieForm.get('year')?.touched"
-                class="text-red-500 text-sm mt-1">
-                Year must be between 1900 and {{ currentYear }}
+                class="text-accent text-sm mt-1 ml-1 flex items-center gap-1">
+                <span>⚠️</span> Year must be between 1900 and {{ currentYear }}
             </div>
         </div>
 
         <!-- Genre (Checkboxes) -->
-        <div class="mb-4">
-            <label class="block text-gray-300 font-medium mb-2">Genre * (Select at least one)</label>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-                <label *ngFor="let genre of genreOptions" class="flex items-center text-gray-300">
+        <div class="mb-6">
+            <label class="block text-gray-300 font-medium mb-3 ml-1">Genre <span class="text-accent">*</span> (Select at
+                least one)</label>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <label *ngFor="let genre of genreOptions"
+                    class="flex items-center p-3 rounded-lg bg-primary-dark/50 border border-white/5 hover:bg-primary-dark cursor-pointer transition-colors group">
                     <input type="checkbox" [value]="genre" [checked]="isGenreSelected(genre)"
-                        (change)="onGenreChange($event)" class="mr-2" />
-                    {{ genre }}
+                        (change)="onGenreChange($event)"
+                        class="mr-3 w-4 h-4 text-secondary rounded focus:ring-secondary bg-gray-700 border-gray-600" />
+                    <span class="text-gray-300 group-hover:text-white transition-colors">{{ genre }}</span>
                 </label>
             </div>
-            <div *ngIf="genreArray.invalid && genreArray.touched" class="text-red-500 text-sm mt-1">
-                At least one genre is required
+            <div *ngIf="genreArray.invalid && genreArray.touched"
+                class="text-accent text-sm mt-2 ml-1 flex items-center gap-1">
+                <span>⚠️</span> At least one genre is required
             </div>
         </div>
 
         <!-- Rating -->
-        <div class="mb-4">
-            <label class="block text-gray-300 font-medium mb-2">Rating * (0-10)</label>
+        <div class="mb-6">
+            <label class="block text-gray-300 font-medium mb-2 ml-1">Rating <span class="text-accent">*</span>
+                (0-10)</label>
             <input type="number" step="0.1" formControlName="rating"
-                class="w-full bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+                class="w-full bg-primary-dark text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary border border-white/10 placeholder-gray-500 transition-all"
                 placeholder="e.g., 8.5" />
             <div *ngIf="movieForm.get('rating')?.invalid && movieForm.get('rating')?.touched"
-                class="text-red-500 text-sm mt-1">
-                Rating must be between 0 and 10
+                class="text-accent text-sm mt-1 ml-1 flex items-center gap-1">
+                <span>⚠️</span> Rating must be between 0 and 10
             </div>
         </div>
 
         <!-- Poster URL -->
-        <div class="mb-4">
-            <label class="block text-gray-300 font-medium mb-2">Poster URL *</label>
+        <div class="mb-6">
+            <label class="block text-gray-300 font-medium mb-2 ml-1">Poster URL <span
+                    class="text-accent">*</span></label>
             <input type="url" formControlName="poster"
-                class="w-full bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+                class="w-full bg-primary-dark text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary border border-white/10 placeholder-gray-500 transition-all"
                 placeholder="https://example.com/poster.jpg" />
             <div *ngIf="movieForm.get('poster')?.invalid && movieForm.get('poster')?.touched"
-                class="text-red-500 text-sm mt-1">
-                Valid URL is required
+                class="text-accent text-sm mt-1 ml-1 flex items-center gap-1">
+                <span>⚠️</span> Valid URL is required
             </div>
         </div>
 
         <!-- Synopsis -->
-        <div class="mb-4">
-            <label class="block text-gray-300 font-medium mb-2">Synopsis *</label>
+        <div class="mb-6">
+            <label class="block text-gray-300 font-medium mb-2 ml-1">Synopsis <span class="text-accent">*</span></label>
             <textarea formControlName="synopsis" rows="4"
-                class="w-full bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+                class="w-full bg-primary-dark text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary border border-white/10 placeholder-gray-500 transition-all resize-none"
                 placeholder="Enter plot summary"></textarea>
             <div *ngIf="movieForm.get('synopsis')?.invalid && movieForm.get('synopsis')?.touched"
-                class="text-red-500 text-sm mt-1">
-                Synopsis is required
+                class="text-accent text-sm mt-1 ml-1 flex items-center gap-1">
+                <span>⚠️</span> Synopsis is required
             </div>
         </div>
 
         <!-- Cast -->
-        <div class="mb-4">
-            <label class="block text-gray-300 font-medium mb-2">Cast * (comma-separated)</label>
+        <div class="mb-6">
+            <label class="block text-gray-300 font-medium mb-2 ml-1">Cast <span class="text-accent">*</span>
+                (comma-separated)</label>
             <input type="text" formControlName="cast"
-                class="w-full bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+                class="w-full bg-primary-dark text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary border border-white/10 placeholder-gray-500 transition-all"
                 placeholder="e.g., Actor 1, Actor 2, Actor 3" />
             <div *ngIf="movieForm.get('cast')?.invalid && movieForm.get('cast')?.touched"
-                class="text-red-500 text-sm mt-1">
-                Cast is required
+                class="text-accent text-sm mt-1 ml-1 flex items-center gap-1">
+                <span>⚠️</span> Cast is required
             </div>
         </div>
 
         <!-- Type -->
-        <div class="mb-4">
-            <label class="block text-gray-300 font-medium mb-2">Type *</label>
-            <select formControlName="type"
-                class="w-full bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-600">
-                <option value="movie">Movie</option>
-                <option value="series">Series</option>
-            </select>
+        <div class="mb-6">
+            <label class="block text-gray-300 font-medium mb-2 ml-1">Type <span class="text-accent">*</span></label>
+            <div class="relative">
+                <select formControlName="type"
+                    class="w-full bg-primary-dark text-white px-4 py-3 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-secondary border border-white/10 cursor-pointer">
+                    <option value="movie">Movie</option>
+                    <option value="series">Series</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                    </svg>
+                </div>
+            </div>
         </div>
 
         <!-- Duration -->
-        <div class="mb-4">
-            <label class="block text-gray-300 font-medium mb-2">Duration *</label>
+        <div class="mb-8">
+            <label class="block text-gray-300 font-medium mb-2 ml-1">Duration <span class="text-accent">*</span></label>
             <input type="text" formControlName="duration"
-                class="w-full bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+                class="w-full bg-primary-dark text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary border border-white/10 placeholder-gray-500 transition-all"
                 placeholder="e.g., 2h 15m or 3 Seasons" />
             <div *ngIf="movieForm.get('duration')?.invalid && movieForm.get('duration')?.touched"
-                class="text-red-500 text-sm mt-1">
-                Duration is required
+                class="text-accent text-sm mt-1 ml-1 flex items-center gap-1">
+                <span>⚠️</span> Duration is required
             </div>
         </div>
 
         <!-- Actions -->
-        <div class="flex space-x-4 mt-6">
+        <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mt-8 pt-6 border-t border-white/10">
             <button type="submit" [disabled]="movieForm.invalid"
-                class="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded transition">
-                {{ isEditMode ? 'Update' : 'Create' }}
+                class="flex-1 bg-secondary hover:bg-secondary-light disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg hover:shadow-secondary/50 transform hover:-translate-y-0.5">
+                {{ isEditMode ? 'Update Movie' : 'Create Movie' }}
             </button>
             <button type="button" (click)="onCancel()"
-                class="flex-1 bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded transition">
+                class="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg hover:shadow-gray-600/50 transform hover:-translate-y-0.5">
                 Cancel
             </button>
         </div>

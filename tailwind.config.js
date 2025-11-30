@@ -6,33 +6,35 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                // Custom color palette for premium look
+                // New Palette from user image
                 primary: {
-                    50: '#fef2f2',
-                    100: '#fee2e2',
-                    200: '#fecaca',
-                    300: '#fca5a5',
-                    400: '#f87171',
-                    500: '#ef4444',
-                    600: '#dc2626',
-                    700: '#b91c1c',
-                    800: '#991b1b',
-                    900: '#7f1d1d',
+                    DEFAULT: '#24305E', // Navy
+                    light: '#374785',
+                    dark: '#1a2240',
+                },
+                secondary: {
+                    DEFAULT: '#5B9AA0', // Teal
+                    light: '#7dbcc2',
+                    dark: '#407075',
                 },
                 accent: {
-                    50: '#fefce8',
-                    100: '#fef9c3',
-                    200: '#fef08a',
-                    300: '#fde047',
-                    400: '#facc15',
-                    500: '#eab308',
-                    600: '#ca8a04',
-                    700: '#a16207',
-                    800: '#854d0e',
-                    900: '#713f12',
+                    DEFAULT: '#D67B77', // Salmon/Red
+                    light: '#e89b98',
+                    dark: '#b55b57',
                 },
+                background: {
+                    DEFAULT: '#C6D8C8', // Sage
+                    light: '#e3ebe4',
+                    dark: '#a8bfa9',
+                },
+                surface: {
+                    DEFAULT: '#EBC0B7', // Peach
+                    light: '#f5dcd7',
+                    dark: '#dca095',
+                },
+                // Keep dark mode colors for compatibility but adjusted to match navy
                 dark: {
-                    DEFAULT: '#0f172a',
+                    DEFAULT: '#24305E', // Navy as main dark bg
                     50: '#f8fafc',
                     100: '#f1f5f9',
                     200: '#e2e8f0',

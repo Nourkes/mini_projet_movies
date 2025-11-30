@@ -1,15 +1,22 @@
 <div class="container mx-auto p-4">
-    <h1 class="text-3xl font-bold text-white mb-6">My Favorites</h1>
+    <h1 class="text-3xl font-bold text-white mb-8 flex items-center gap-3">
+        <span class="text-4xl">❤️</span>
+        <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">My Favorites</span>
+    </h1>
 
     <div *ngIf="favoriteMovies.length > 0; else noFavorites"
-        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
         <app-movie-card *ngFor="let movie of favoriteMovies" [movie]="movie"></app-movie-card>
     </div>
 
     <ng-template #noFavorites>
-        <div class="text-center py-20 text-gray-500">
-            <p class="text-xl mb-4">You haven't added any favorites yet.</p>
-            <a routerLink="/movies" class="text-red-500 hover:underline">Explore Movies</a>
+        <div class="text-center py-24 text-gray-500 bg-primary-light/30 rounded-xl border border-white/5">
+            <div class="text-6xl mb-4 grayscale opacity-50">💔</div>
+            <p class="text-xl font-medium text-gray-300 mb-6">You haven't added any favorites yet.</p>
+            <a routerLink="/movies"
+                class="inline-block bg-secondary hover:bg-secondary-light text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg hover:shadow-secondary/50 transform hover:-translate-y-0.5">
+                Explore Movies
+            </a>
         </div>
     </ng-template>
 </div>

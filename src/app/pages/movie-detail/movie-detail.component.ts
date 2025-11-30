@@ -21,13 +21,16 @@ export class MovieDetailComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        const id = Number(this.route.snapshot.paramMap.get('id'));
-        this.movieService.getMovieById(id).subscribe(movie => {
-            this.movie = movie;
-            if (this.movie) {
-                this.checkFavorite();
-            }
-        });
+        const rawId = this.route.snapshot.paramMap.get('id');
+        if (rawId) {
+            const id = !isNaN(Number(rawId)) ? Number(rawId) : rawId;
+            this.movieService.getMovieById(id).subscribe(movie => {
+                this.movie = movie;
+                if (this.movie) {
+                    this.checkFavorite();
+                }
+            });
+        }
 
         this.movieService.getFavorites().subscribe(() => {
             if (this.movie) this.checkFavorite();

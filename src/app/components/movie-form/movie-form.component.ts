@@ -16,7 +16,7 @@ import { RatingValidatorDirective } from '../../directives/rating-validator.dire
 export class MovieFormComponent implements OnInit {
     movieForm: FormGroup;
     isEditMode = false;
-    movieId: number | null = null;
+    movieId: number | string | null = null;
     currentYear = new Date().getFullYear();
 
     genreOptions = ['Action', 'Comedy', 'Drama', 'Sci-Fi', 'Horror', 'Animation', 'Crime', 'Adventure', 'Fantasy', 'Thriller'];
@@ -41,10 +41,10 @@ export class MovieFormComponent implements OnInit {
     }
 
     ngOnInit() {
-        const id = this.route.snapshot.paramMap.get('id');
-        if (id) {
+        const rawId = this.route.snapshot.paramMap.get('id');
+        if (rawId) {
             this.isEditMode = true;
-            this.movieId = Number(id);
+            this.movieId = !isNaN(Number(rawId)) ? Number(rawId) : rawId;
             this.loadMovie(this.movieId);
         }
     }
@@ -67,7 +67,7 @@ export class MovieFormComponent implements OnInit {
         return this.genreArray.value.includes(genre);
     }
 
-    loadMovie(id: number) {
+    loadMovie(id: number | string) {
         this.movieService.getMovieById(id).subscribe(movie => {
             if (movie) {
                 this.movieForm.patchValue({

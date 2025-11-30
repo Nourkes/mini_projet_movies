@@ -17,9 +17,12 @@ export class FavoritesComponent implements OnInit {
     constructor(private movieService: MovieService) { }
 
     ngOnInit() {
-        this.movieService.getFavorites().subscribe(favIds => {
-            this.movieService.getMovies().subscribe(allMovies => {
-                this.favoriteMovies = allMovies.filter(m => favIds.includes(m.id));
+        this.movieService.getMovies().subscribe(allMovies => {
+            this.movieService.getFavorites().subscribe(favIds => {
+                // Use loose comparison to handle string and number IDs
+                this.favoriteMovies = allMovies.filter(m =>
+                    favIds.some(favId => favId == m.id) // Use == for loose comparison
+                );
             });
         });
     }

@@ -16,7 +16,8 @@ import { RatingValidatorDirective } from '../../directives/rating-validator.dire
 export class MovieFormComponent implements OnInit {
     movieForm: FormGroup;
     isEditMode = false;
-    movieId: number | null = null;
+    movieId: string | number | null = null; // Support both string and number
+
     currentYear = new Date().getFullYear();
 
     genreOptions = ['Action', 'Comedy', 'Drama', 'Sci-Fi', 'Horror', 'Animation', 'Crime', 'Adventure', 'Fantasy', 'Thriller'];
@@ -44,7 +45,7 @@ export class MovieFormComponent implements OnInit {
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
             this.isEditMode = true;
-            this.movieId = Number(id);
+            this.movieId = id; // Keep as string or number
             this.loadMovie(this.movieId);
         }
     }
@@ -67,24 +68,37 @@ export class MovieFormComponent implements OnInit {
         return this.genreArray.value.includes(genre);
     }
 
-    loadMovie(id: number) {
-        this.movieService.getMovieById(id).subscribe(movie => {
-            if (movie) {
-                this.movieForm.patchValue({
-                    title: movie.title,
-                    year: movie.year,
-                    rating: movie.rating,
-                    poster: movie.poster,
-                    synopsis: movie.synopsis,
-                    cast: movie.cast.join(', '),
-                    type: movie.type,
-                    duration: movie.duration
-                });
 
-                // Set genre checkboxes
-                movie.genre.forEach(g => {
-                    this.genreArray.push(this.fb.control(g));
-                });
+    loadMovie(id: string | number) {
+        this.movieService.getMovieById(id).subscribe({
+            next: (movie) => {
+                if (movie) {
+                    // Vider d'abord le FormArray des genres
+                    while (this.genreArray.length) {
+                        this.genreArray.removeAt(0);
+                    }
+
+                    // Remplir le formulaire avec les données du film
+                    this.movieForm.patchValue({
+                        title: movie.title,
+                        year: movie.year,
+                        rating: movie.rating,
+                        poster: movie.poster,
+                        synopsis: movie.synopsis,
+                        cast: movie.cast.join(', '),
+                        type: movie.type,
+                        duration: movie.duration
+                    });
+
+                    // Ajouter les genres au FormArray
+                    movie.genre.forEach(g => {
+                        this.genreArray.push(this.fb.control(g));
+                    });
+                }
+            },
+            error: (err) => {
+                console.error('Erreur lors du chargement du film:', err);
+                alert('Erreur lors du chargement du film. Veuillez réessayer.');
             }
         });
     }

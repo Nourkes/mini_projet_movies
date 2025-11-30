@@ -1,5 +1,5 @@
 export interface Movie {
-    id: number;
+    id: string | number; // Support both string and number IDs
     title: string;
     year: number;
     genre: string[];

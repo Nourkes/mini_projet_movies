@@ -12,7 +12,7 @@ export class MovieService {
     private favoritesUrl = 'http://localhost:3000/favorites';
 
     private moviesSubject: BehaviorSubject<Movie[]> = new BehaviorSubject<Movie[]>([]);
-    private favoritesSubject: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
+    private favoritesSubject: BehaviorSubject<(string | number)[]> = new BehaviorSubject<(string | number)[]>([]);
 
     constructor(private http: HttpClient) {
         // Charger les films et favoris au démarrage
@@ -38,14 +38,19 @@ export class MovieService {
      * Charge les favoris depuis le serveur
      */
     private loadFavoritesFromServer(): void {
-        this.http.get<number[]>(this.favoritesUrl).pipe(
+        this.http.get<{ ids: (string | number)[] }>(this.favoritesUrl).pipe(
             catchError(error => {
                 console.error('Erreur lors du chargement des favoris:', error);
-                // Si l'endpoint n'existe pas encore, retourner un tableau vide
+                // Si l'endpoint n'existe pas encore ou erreur, retourner un tableau vide
                 return throwError(() => error);
             })
-        ).subscribe(favorites => {
-            this.favoritesSubject.next(favorites || []);
+        ).subscribe({
+            next: (data) => {
+                this.favoritesSubject.next(data.ids || []);
+            },
+            error: () => {
+                this.favoritesSubject.next([]);
+            }
         });
     }
 
@@ -59,9 +64,9 @@ export class MovieService {
     }
 
     /**
-     * Retourne un film par son ID
+     * Retourne un film par son ID (supporte string et number)
      */
-    getMovieById(id: number): Observable<Movie | undefined> {
+    getMovieById(id: string | number): Observable<Movie | undefined> {
         return this.http.get<Movie>(`${this.apiUrl}/${id}`).pipe(
             catchError(error => {
                 console.error(`Erreur lors de la récupération du film ${id}:`, error);
@@ -92,16 +97,16 @@ export class MovieService {
     // ==================== UPDATE Operation ====================
 
     /**
-     * Met à jour un film existant
+     * Met à jour un film existant (supporte string et number pour ID)
      */
-    updateMovie(id: number, updatedMovie: Omit<Movie, 'id'>): Observable<Movie> {
+    updateMovie(id: string | number, updatedMovie: Omit<Movie, 'id'>): Observable<Movie> {
         const movieWithId: Movie = { ...updatedMovie, id };
 
         return this.http.put<Movie>(`${this.apiUrl}/${id}`, movieWithId).pipe(
             tap(movie => {
                 // Mettre à jour le BehaviorSubject local
                 const currentMovies = this.moviesSubject.value;
-                const index = currentMovies.findIndex(m => m.id === id);
+                const index = currentMovies.findIndex(m => m.id == id); // Use == for loose comparison
                 if (index !== -1) {
                     const updatedMovies = [...currentMovies];
                     updatedMovies[index] = movie;
@@ -118,14 +123,14 @@ export class MovieService {
     // ==================== DELETE Operation ====================
 
     /**
-     * Supprime un film
+     * Supprime un film (supporte string et number pour ID)
      */
-    deleteMovie(id: number): Observable<void> {
+    deleteMovie(id: string | number): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
             tap(() => {
                 // Mettre à jour le BehaviorSubject local
                 const currentMovies = this.moviesSubject.value;
-                const filteredMovies = currentMovies.filter(m => m.id !== id);
+                const filteredMovies = currentMovies.filter(m => m.id != id); // Use != for loose comparison
                 this.moviesSubject.next(filteredMovies);
 
                 // Retirer des favoris si présent
@@ -145,32 +150,38 @@ export class MovieService {
     /**
      * Retourne un Observable des IDs favoris
      */
-    getFavorites(): Observable<number[]> {
+    getFavorites(): Observable<(string | number)[]> {
         return this.favoritesSubject.asObservable();
     }
 
     /**
-     * Vérifie si un film est dans les favoris
+     * Vérifie si un film est dans les favoris (supporte string et number)
      */
-    isFavorite(id: number): boolean {
-        return this.favoritesSubject.value.includes(id);
+    isFavorite(id: string | number): boolean {
+        return this.favoritesSubject.value.some(favId => favId == id); // Use == for loose comparison
     }
 
     /**
-     * Ajoute ou retire un film des favoris
+     * Ajoute ou retire un film des favoris (supporte string et number)
      */
-    toggleFavorite(id: number): Observable<number[]> {
+    toggleFavorite(id: string | number): Observable<(string | number)[]> {
         const currentFavorites = this.favoritesSubject.value;
-        let newFavorites: number[];
+        let newFavorites: (string | number)[];
 
-        if (currentFavorites.includes(id)) {
-            newFavorites = currentFavorites.filter(favId => favId !== id);
+        // Keep the ID as-is (string or number)
+        const existingIndex = currentFavorites.findIndex(favId => favId == id);
+
+        if (existingIndex !== -1) {
+            // Remove from favorites
+            newFavorites = currentFavorites.filter(favId => favId != id);
         } else {
+            // Add to favorites
             newFavorites = [...currentFavorites, id];
         }
 
-        // Mettre à jour sur le serveur (PUT pour remplacer toute la liste)
-        return this.http.put<number[]>(this.favoritesUrl, newFavorites).pipe(
+        // Mettre à jour sur le serveur (PUT avec structure object)
+        return this.http.put<{ ids: (string | number)[] }>(this.favoritesUrl, { ids: newFavorites }).pipe(
+            map(response => response.ids),
             tap(favorites => {
                 this.favoritesSubject.next(favorites);
             }),

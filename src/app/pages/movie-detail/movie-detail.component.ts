@@ -21,13 +21,21 @@ export class MovieDetailComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        const id = Number(this.route.snapshot.paramMap.get('id'));
-        this.movieService.getMovieById(id).subscribe(movie => {
-            this.movie = movie;
-            if (this.movie) {
-                this.checkFavorite();
-            }
-        });
+        const id = this.route.snapshot.paramMap.get('id'); // Keep as string or number
+        if (id) {
+            this.movieService.getMovieById(id).subscribe({
+                next: (movie) => {
+                    this.movie = movie;
+                    if (this.movie) {
+                        this.checkFavorite();
+                    }
+                },
+                error: (err) => {
+                    console.error('Error loading movie:', err);
+                    this.movie = undefined;
+                }
+            });
+        }
 
         this.movieService.getFavorites().subscribe(() => {
             if (this.movie) this.checkFavorite();
@@ -42,7 +50,9 @@ export class MovieDetailComponent implements OnInit {
 
     toggleFavorite() {
         if (this.movie) {
-            this.movieService.toggleFavorite(this.movie.id);
+            this.movieService.toggleFavorite(this.movie.id).subscribe({
+                error: (err) => console.error('Error toggling favorite:', err)
+            });
         }
     }
 }
